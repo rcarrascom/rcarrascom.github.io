@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Robinson Martinez Portfolio</title>
+<meta name="description" content="Solutions consultant who builds the tools behind the demo: AI agents, Runbook Automation, and internal apps.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..900&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: a printed on-call console. Square panels share hairline borders like a terminal grid; the only colour story is the incident timeline, which runs from sev-1 red to resolved green. Dark-first. */
+:root{
+  --bg:#0B1220; --panel:#0F1828; --panel-2:#142034; --line:#24324C; --ink:#E7ECF4; --muted:#8F9BB3;
+  --accent:#7DE1C8; --accent-soft:#11302C;
+  --sev1:#F0684F; --sev2:#F09A4A; --sev3:#E8C25A; --sev4:#8FB1F2; --sev5:#7DE1C8;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#F4F5F7; --panel:#FFFFFF; --panel-2:#EEF1F5; --line:#D3D9E3; --ink:#111B2E; --muted:#58637A;
+  --accent:#0B7A63; --accent-soft:#DCF1EA;
+  --sev1:#C8412A; --sev2:#C46A1C; --sev3:#9C7A10; --sev4:#2F5FB3; --sev5:#0B7A63; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#F4F5F7; --panel:#FFFFFF; --panel-2:#EEF1F5; --line:#D3D9E3; --ink:#111B2E; --muted:#58637A;
+  --accent:#0B7A63; --accent-soft:#DCF1EA;
+  --sev1:#C8412A; --sev2:#C46A1C; --sev3:#9C7A10; --sev4:#2F5FB3; --sev5:#0B7A63; color-scheme:light}
+
+*{box-sizing:border-box}
+img{max-width:100%}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:var(--accent);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto}
+.mono{font-family:var(--mono)}
+kbd{font:500 11px var(--mono);border:1px solid var(--line);padding:0 4px;color:var(--muted);background:var(--panel)}
+.label{font:400 12.5px var(--mono);color:var(--muted)}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px;border-bottom:1px solid var(--line)}
+.brand{font:500 14px var(--mono);color:var(--ink);text-decoration:none}
+.brand span{color:var(--muted)}
+.bar nav{display:flex;gap:0;align-items:stretch;border:1px solid var(--line)}
+.btn{font:500 13px var(--mono);color:var(--ink);background:var(--panel);border:0;padding:7px 12px;cursor:pointer;display:inline-flex;gap:8px;align-items:center;text-decoration:none}
+.bar nav .btn+.btn{border-left:1px solid var(--line)}
+.btn:hover{background:var(--panel-2)}
+.draft{font:400 12px/1 var(--mono);color:var(--sev3);padding-block:10px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:48px;padding-block:44px 36px;align-items:start}
+.hero .hi{font:400 14px var(--mono);color:var(--muted);margin:0 0 18px}
+.hero h1{font:800 clamp(36px,5.4vw,64px)/1.0 var(--display);font-stretch:110%;letter-spacing:-.02em;margin:0;text-wrap:balance;max-width:16ch}
+.lede{font-size:18px;max-width:58ch;margin:24px 0 0}
+.lede+.lede{margin-top:12px;color:var(--muted);font-size:16px}
+.cta{display:flex;flex-wrap:wrap;margin-top:28px;border:1px solid var(--line);width:max-content;max-width:100%}
+.cta a{font:500 13px var(--mono);padding:10px 14px;text-decoration:none;color:var(--ink);background:var(--panel)}
+.cta a+a{border-left:1px solid var(--line)}
+.cta a.primary{background:var(--accent);color:var(--bg)}
+.photo{margin:0;border:1px solid var(--line);background:var(--panel)}
+.photo img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
+.photo figcaption{padding:12px 14px;border-top:1px solid var(--line);margin:0}
+.photo dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 12px;margin:0;font:400 12.5px/1.6 var(--mono);color:var(--ink)}
+.photo dt{color:var(--muted)}
+.photo dd{margin:0}
+
+/* signature: incident timeline */
+.curve{border:1px solid var(--line);background:var(--panel);margin-top:8px}
+.curve-h{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding:16px 20px;border-bottom:1px solid var(--line)}
+.curve-h h2{font:700 17px/1.3 var(--display);font-stretch:105%;margin:0}
+.curve-h p{margin:0;font:400 12.5px var(--mono);color:var(--muted)}
+.rows{padding:10px 20px 16px}
+.row{display:grid;grid-template-columns:150px minmax(0,1fr) 72px;gap:16px;align-items:center;padding-block:7px}
+.row .stage{font:500 13px var(--mono)}
+.row .stage small{display:block;font-weight:400;color:var(--muted);font-size:12px;line-height:1.35}
+.track{height:14px;background:var(--panel-2);position:relative}
+.track i{position:absolute;inset:0 auto 0 0;min-width:4px}
+.row b{font:600 15px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.s1 i{background:var(--sev1)}.s1 b{color:var(--sev1)}
+.s2 i{background:var(--sev2)}.s2 b{color:var(--sev2)}
+.s3 i{background:var(--sev3)}.s3 b{color:var(--sev3)}
+.s4 i{background:var(--sev4)}.s4 b{color:var(--sev4)}
+.s5 i{background:var(--sev5)}.s5 b{color:var(--sev5)}
+.curve-f{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line)}
+.curve-f div{padding:14px 20px}
+.curve-f div+div{border-left:1px solid var(--line)}
+.curve-f b{display:block;font:700 22px/1 var(--display);font-stretch:100%;font-variant-numeric:tabular-nums}
+.curve-f span{display:block;margin-top:6px;font-size:12px;color:var(--muted);line-height:1.35}
+@media (prefers-reduced-motion:no-preference){
+  .track i{transform-origin:left;animation:grow 1s cubic-bezier(.2,.7,.2,1) both}
+  .s2 i{animation-delay:.08s}.s3 i{animation-delay:.16s}.s4 i{animation-delay:.24s}.s5 i{animation-delay:.32s}
+  @keyframes grow{from{transform:scaleX(.02)}to{transform:none}}
+}
+
+/* sections */
+.sec{padding-block:64px 0}
+.sec>header{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.sec h2{font:800 clamp(24px,3vw,32px)/1.1 var(--display);font-stretch:116%;margin:0;letter-spacing:-.01em}
+
+/* bento: one console grid with shared hairlines */
+.bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.tile{background:var(--panel);padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0;color:var(--ink);text-decoration:none}
+.tile:hover{background:var(--panel-2)}
+.tile .label{color:var(--muted)}
+.tile h3{font:800 20px/1.18 var(--display);font-stretch:106%;margin:0;text-wrap:balance}
+.tile p{margin:0;color:var(--muted);font-size:14.5px}
+.tile .go{margin-top:auto;font:400 12.5px var(--mono);color:var(--muted)}
+.tile:hover .go{color:var(--accent)}
+.tile img{width:100%;display:block;border:1px solid var(--line)}
+.big{font:800 52px/1 var(--display);font-stretch:100%;color:var(--accent);font-variant-numeric:tabular-nums}
+.t-pulse{grid-column:span 2;grid-row:span 2}
+.t-agents,.t-scopion,.t-inui{grid-column:span 2}
+.t-lib{grid-column:1/-1}
+.minibar{display:flex;flex-direction:column;gap:8px;font:400 12px var(--mono);color:var(--muted)}
+.minibar div{display:grid;grid-template-columns:56px minmax(0,1fr) 60px;gap:10px;align-items:center}
+.minibar s{display:block;height:10px;background:var(--sev2);text-decoration:none}
+.minibar s.on{background:var(--accent)}
+.jobs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.jobs div{padding:12px;font:400 12.5px/1.6 var(--mono);color:var(--muted);min-width:0;background:var(--panel-2)}
+.jobs b{display:block;color:var(--ink);font:600 13px var(--mono);margin-bottom:2px}
+
+/* slack-style message */
+.msg{display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;background:var(--panel-2);border:1px solid var(--line);padding:12px 14px;font-size:14.5px;line-height:1.5}
+.msg .av{width:36px;height:36px;background:var(--sev4);color:var(--bg);display:grid;place-items:center;font:700 14px var(--body)}
+.msg .who{font-weight:700}
+.msg .who span{font-weight:400;font-size:12px;color:var(--muted);margin-left:6px}
+.msg .ch{font:400 12px var(--mono);color:var(--muted)}
+.msg p{margin:4px 0 0}
+.msg ul{margin:6px 0 0;padding-left:18px}
+.msg .re{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.msg .re span{font-size:12px;border:1px solid var(--line);padding:1px 7px;background:var(--panel);color:var(--muted)}
+.tile .msg{font-size:13.5px}
+
+/* case files */
+.entry{display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px;padding-block:36px;border-top:1px solid var(--line);scroll-margin-top:64px}
+.rail{font:400 13px/1.7 var(--mono);color:var(--muted);display:flex;flex-direction:column;gap:10px;min-width:0}
+.rail .when{color:var(--ink);font-weight:500}
+.tag{align-self:flex-start;font:400 12px/1.4 var(--mono);padding:3px 7px;border:1px solid var(--line);color:var(--ink)}
+.tag.ok{border-color:var(--accent);color:var(--accent)}
+.tag.int{border-color:var(--sev3);color:var(--sev3)}
+.stack{font-size:12.5px;color:var(--muted)}
+.body{min-width:0}
+.body h3{font:800 25px/1.15 var(--display);font-stretch:106%;margin:0 0 6px;text-wrap:balance}
+.body .sub{color:var(--muted);margin:0 0 18px}
+.body dl{display:grid;grid-template-columns:80px minmax(0,1fr);gap:10px 18px;margin:0 0 22px}
+.body dt{font:400 13px/1.75 var(--mono);color:var(--muted)}
+.body dd{margin:0;max-width:66ch}
+figure{margin:0}
+figure img{display:block;width:100%;border:1px solid var(--line)}
+figcaption{font:400 12px var(--mono);color:var(--muted);margin-top:8px}
+.term{background:#070C17;color:#D7E1F2;padding:16px 18px;font:400 13px/1.7 var(--mono);overflow-x:auto;border:1px solid var(--line);margin:0}
+.term .p{color:#7DE1C8}.term .d{color:#8A97B3}.term .g{color:#7DE1C8}.term .y{color:#E8C25A}
+.note{font-size:12px;color:var(--muted);margin:8px 0 0}
+
+/* roadmap */
+.road{border:1px solid var(--line);background:var(--panel)}
+.road-row{display:grid;grid-template-columns:110px minmax(0,1fr) minmax(0,1.1fr);gap:20px;padding:16px 20px;align-items:start}
+.road-row+.road-row{border-top:1px solid var(--line)}
+.road-row h4{margin:0;font:700 16px/1.3 var(--display);font-stretch:104%}
+.road-row p{margin:0;font-size:14px;color:var(--muted)}
+.road-row .from{font:400 12.5px/1.6 var(--mono);color:var(--muted)}
+.road-row .from b{color:var(--ink);font-weight:500}
+.st{justify-self:start;font:400 12px/1.4 var(--mono);padding:3px 7px;border:1px solid var(--line);white-space:nowrap}
+.st.go{border-color:var(--accent);color:var(--accent)}
+.st.next{border-color:var(--sev4);color:var(--sev4)}
+.st.explore{color:var(--muted)}
+
+/* more work */
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.card{background:var(--panel);padding:18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.card h4{font:700 16px/1.25 var(--display);font-stretch:104%;margin:0}
+.card p{margin:0;font-size:14px;color:var(--muted)}
+
+/* path */
+.tl{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.tl li{background:var(--panel);padding:14px 16px}
+.tl li.now{background:var(--accent-soft)}
+.tl b{display:block;font:500 12.5px var(--mono);color:var(--muted)}
+.tl span{display:block;font-weight:600;line-height:1.35;margin-top:4px}
+.tl small{display:block;color:var(--muted);font-size:13px;margin-top:4px;line-height:1.4}
+
+footer{margin-top:80px;padding-block:24px 48px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font:400 13px var(--mono);color:var(--muted)}
+
+/* command palette */
+.pal-back{position:fixed;inset:0;z-index:20;background:color-mix(in srgb,#000 55%,transparent);display:flex;justify-content:center;align-items:flex-start;
+  padding:calc(12vh + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px))}
+.pal{width:100%;max-width:560px;background:var(--panel);border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.pal input{width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);font:400 16px var(--mono);padding:16px 18px;outline:none}
+.pal ul{list-style:none;margin:0;padding:4px 0;max-height:min(360px,55vh);overflow-y:auto}
+.pal li{display:flex;justify-content:space-between;gap:12px;padding:9px 18px;cursor:pointer;font-size:14.5px}
+.pal li small{font:400 12px var(--mono);color:var(--muted)}
+.pal li[aria-selected="true"]{background:var(--panel-2);box-shadow:inset 3px 0 0 var(--accent)}
+.pal .empty{padding:14px 18px;color:var(--muted);font-size:14px}
+.pal-f{display:flex;gap:14px;padding:10px 18px;border-top:1px solid var(--line);font:400 11px var(--mono);color:var(--muted);flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;background:var(--ink);color:var(--bg);font:500 13px var(--mono);padding:9px 14px}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:minmax(0,1fr) 220px;gap:28px}
+  .bento{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .t-pulse{grid-row:auto}
+  .curve-f{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .curve-f div:nth-child(3){border-left:0}
+  .curve-f div:nth-child(n+3){border-top:1px solid var(--line)}
+}
+@media (max-width:620px){
+  .bar .hide-s{display:none}
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .photo{max-width:260px}
+  .row{grid-template-columns:minmax(0,1fr) 64px;gap:6px 12px}
+  .row .stage{grid-column:1/-1}
+  .bento,.grid,.jobs{grid-template-columns:minmax(0,1fr)}
+  .t-pulse,.t-agents,.t-scopion,.t-inui,.t-lib{grid-column:auto}
+  .entry{grid-template-columns:minmax(0,1fr);gap:16px}
+  .rail{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 12px}
+  .body dl{grid-template-columns:minmax(0,1fr);gap:2px}
+  .body dd{margin-bottom:10px}
+  .road-row{grid-template-columns:minmax(0,1fr);gap:8px}
+  .tl{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="bar">
+    <a class="brand" href="#top">robinson<span>.martinez</span></a>
+    <nav>
+      <a class="btn hide-s" href="#work">work</a>
+      <a class="btn hide-s" href="https://github.com/rcarrascom" target="_blank" rel="noopener">github ↗</a>
+      <button class="btn" id="theme" type="button" aria-label="Switch light or dark theme">◐</button>
+      <button class="btn" id="open-pal" type="button" aria-label="Open command palette">jump <kbd id="kbd-hint">⌘K</kbd></button>
+    </nav>
+  </header>
+  <span id="top"></span>
+
+  <section class="hero">
+    <div>
+      <p class="hi">Hola, I'm Robinson.</p>
+      <h1>If the demo needs a tool that doesn't exist yet, I build it.</h1>
+      <p class="lede">I'm a Solutions Consultant at PagerDuty. Most of my day is customer calls about incident response and automation. The rest goes into building the things that make those calls better: AI agents that run live incident drills, Rundeck jobs customers take to production, and apps my own team uses every day.</p>
+      <p class="lede">I started in technical support, moved into pre-sales in 18 months, and I work in English and Spanish across North America, LATAM and EMEA.</p>
+      <div class="cta">
+        <a class="primary" href="#work">see the work</a>
+        <a href="https://www.linkedin.com/in/robinson-martinez-se" target="_blank" rel="noopener">linkedin ↗</a>
+        <a href="https://github.com/rcarrascom" target="_blank" rel="noopener">github ↗</a>
+      </div>
+    </div>
+    <figure class="photo">
+      <img src="assets/me-large.jpg" alt="Robinson Martinez">
+      <figcaption><dl>
+        <dt>role</dt><dd>Solutions Consultant II</dd>
+        <dt>based</dt><dd>Santiago, Chile</dd>
+        <dt>works</dt><dd>remote · EN / ES</dd>
+      </dl></figcaption>
+    </figure>
+  </section>
+
+  <section class="curve" aria-labelledby="curve-title">
+    <div class="curve-h">
+      <h2 id="curve-title">The same incident, five teams. This is the curve I help teams move down.</h2>
+      <p>a bad config change at 5:40 p.m. · time to fix · illustrative</p>
+    </div>
+    <div class="rows">
+      <div class="row s1"><span class="stage">Reactive<small>customers report it</small></span><div class="track"><i style="width:100%"></i></div><b>4h</b></div>
+      <div class="row s2"><span class="stage">Managed<small>an alert fires, plus 41 others</small></span><div class="track"><i style="width:37.5%"></i></div><b>1h 30m</b></div>
+      <div class="row s3"><span class="stage">Proactive<small>42 alerts become one incident</small></span><div class="track"><i style="width:16.7%"></i></div><b>40m</b></div>
+      <div class="row s4"><span class="stage">Automated<small>diagnosis runs on its own</small></span><div class="track"><i style="width:5%"></i></div><b>12m</b></div>
+      <div class="row s5"><span class="stage">Autonomous<small>an agent proposes the fix</small></span><div class="track"><i style="width:1.7%"></i></div><b>4m</b></div>
+    </div>
+    <div class="curve-f" aria-label="My pre-sales results, Jul 2025 to Oct 2026">
+      <div><b>~$1.45M</b><span>closed-won I worked on, 26 deals</span></div>
+      <div><b>~34%</b><span>win rate on closed deals</span></div>
+      <div><b>176</b><span>customer calls I led, 78 accounts</span></div>
+      <div><b>41</b><span>of them about automation</span></div>
+    </div>
+  </section>
+
+  <section class="sec" id="work">
+    <header><h2>Things I've built</h2><span class="label">bigger tile, bigger impact · <kbd>⌘K</kbd> to jump</span></header>
+    <div class="bento">
+      <a class="tile t-pulse" href="#pulsesf">
+        <span class="label">internal tool · my team uses it daily</span>
+        <h3>PulseSF: I got tired of updating Salesforce one record at a time</h3>
+        <div class="big">−75%</div>
+        <p>time per round of pipeline updates</p>
+        <div class="minibar" aria-label="Before: about 60 minutes. After: 15 minutes or less.">
+          <div><span>before</span><s style="width:100%"></s><span>~60 min</span></div>
+          <div><span>after</span><s class="on" style="width:25%"></s><span>≤15 min</span></div>
+        </div>
+        <div class="msg" aria-label="Message from my manager">
+          <div class="av" aria-hidden="true">M</div>
+          <div>
+            <div class="who">My manager<span>Oct 2026</span></div>
+            <div class="ch">team announcement</div>
+            <p>He built a Salesforce connector and a UI that made updating SC notes, stages, and activity quick and easy, saving the team a ton of time.</p>
+            <div class="re"><span>🎉 17</span><span>👏 13</span><span>🦜 5</span></div>
+          </div>
+        </div>
+        <span class="go">read the case file →</span>
+      </a>
+      <a class="tile t-agents" href="#agents">
+        <span class="label">AI agents · 11 workflows</span>
+        <h3>AI agents that run real incident drills</h3>
+        <p>Setting up a believable demo used to take me days. Now it takes minutes.</p>
+        <span class="go">read the case file →</span>
+      </a>
+      <a class="tile" href="#health">
+        <span class="label">how I sell</span>
+        <h3>Health check first, feature second</h3>
+        <p>Same analysis, written for whoever has to read it.</p>
+        <span class="go">read →</span>
+      </a>
+      <a class="tile" href="#rba">
+        <span class="label">my specialty</span>
+        <h3>Runbook Automation</h3>
+        <p>First on my team to go deep on it. Now the go-to.</p>
+        <span class="go">read →</span>
+      </a>
+      <a class="tile t-inui" href="#inui">
+        <span class="label">support tool · built with two teammates</span>
+        <h3>INUI: a manual risk review, now one command</h3>
+        <pre class="term" aria-hidden="true"><span class="p">❯</span> inui --account acme-demo
+<span class="d">risk score </span><span class="g">12/100 low</span> · <span class="d">suggest</span> <span class="g">approve</span></pre>
+        <span class="go">read the case file →</span>
+      </a>
+      <a class="tile t-scopion" href="#scopion">
+        <span class="label">open source · MIT</span>
+        <h3>Scopion: know which deals you'll actually win</h3>
+        <img src="assets/scopion.jpg" alt="Scopion pipeline analytics screen" loading="lazy">
+        <span class="go">read the case file →</span>
+      </a>
+      <a class="tile t-lib" href="#rba">
+        <span class="label">Runbook Automation · job library</span>
+        <h3>Six jobs, built in pairs: look first, then fix</h3>
+        <p>Every pair works the same way. The first job diagnoses and posts what it found to the incident. The second fixes it behind a guardrail and resolves the incident.</p>
+        <div class="jobs">
+          <div><b>Network interface</b>diagnose → remediate<br>link state, errors, guarded bounce</div>
+          <div><b>Stalled CI pipeline</b>diagnose → restart and reconnect workers<br>CloudWatch metrics, incident notes</div>
+          <div><b>Locked directory account</b>check the reason → unlock<br>email and incident-driven versions</div>
+        </div>
+        <span class="go">how I structure jobs →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="sec" aria-label="Case files">
+    <header><h2>Case files</h2><span class="label">problem · what I built · what happened</span></header>
+
+    <article class="entry" id="pulsesf">
+      <div class="rail">
+        <span class="when">2026</span>
+        <span class="tag ok">in daily use</span>
+        <span class="tag int">internal, shown without data</span>
+        <span class="stack">Python · Salesforce CLI</span>
+      </div>
+      <div class="body">
+        <h3>PulseSF: a pipeline workspace for solutions consultants</h3>
+        <p class="sub">I got tired of updating Salesforce one record at a time, so I fixed it for the whole team.</p>
+        <dl>
+          <dt>problem</dt><dd>Every week, each of us updated notes, stages and activity for every opportunity in the Salesforce web UI, one record at a time. It ate hours.</dd>
+          <dt>built</dt><dd>A desktop app on top of the Salesforce CLI. You sign in once, edit many opportunities at once, and it pushes the changes in the background. It saves a local backup before every change, so nothing gets lost, and it shows closed-won revenue for the current quarter.</dd>
+          <dt>result</dt><dd>A round of pipeline updates went from about an hour to 15 minutes or less. It's shared internally, the Solutions Consulting team uses it, and my manager named it when announcing my promotion.</dd>
+        </dl>
+      </div>
+    </article>
+
+    <article class="entry" id="agents">
+      <div class="rail">
+        <span class="when">2026</span>
+        <span class="tag ok">11 workflows in use</span>
+        <span class="stack">Claude Code · MCP · Python · REST API</span>
+      </div>
+      <div class="body">
+        <h3>AI agents that run real incident drills</h3>
+        <p class="sub">Setting up a believable demo used to take me days. Now it takes minutes.</p>
+        <dl>
+          <dt>problem</dt><dd>A good demo needs a realistic incident: alerts that look like the customer's tools, the right people on call, and notes that read like a real team working the problem. Building that by hand took days for every prospect.</dd>
+          <dt>built</dt><dd>Agent workflows on Claude Code and the Model Context Protocol. They read context from CRM, chat and email, send alerts in the customer's own format, check who's really on call, and post notes and acknowledgments through the incident API, so the drill looks like a team responding live. The same set builds Runbook Automation jobs, preps discovery calls, and draws diagrams and decks.</dd>
+          <dt>guardrail</dt><dd>The drill scripts refuse to run outside a sandbox account. The agents get a short menu of tested actions, never open-ended access.</dd>
+        </dl>
+        <figure><img src="assets/toolkit.jpg" alt="Diagram: context sources feed an agent layer that calls the incident API and posts to a live drill" loading="lazy"><figcaption>How the toolkit fits together. Customer names removed.</figcaption></figure>
+      </div>
+    </article>
+
+    <article class="entry" id="health">
+      <div class="rail">
+        <span class="when">2026</span>
+        <span class="tag ok">repeatable</span>
+        <span class="tag int">customer data stays private</span>
+        <span class="stack">account data · SQL · writing</span>
+      </div>
+      <div class="body">
+        <h3>Health check first, feature second</h3>
+        <p class="sub">Before I write the deck, I figure out who's going to read it.</p>
+        <dl>
+          <dt>problem</dt><dd>Existing customers usually get pitched add-ons with generic slides. I had two customers with the same problem, alert noise paging their teams around the clock, and two very different people who'd read my recommendation.</dd>
+          <dt>built</dt><dd>A review built from six months of each customer's own data. It starts with the fixes they can make today on the plan they already pay for: escalation gaps, stale services, urgency settings. Only then does it show what the add-on adds, as today, after quick wins, with the add-on, and their own goal. For one customer I made a visual one-pager about the two engineers carrying half the pages. For the other, a written review built around the numbers their team had set as goals months earlier.</dd>
+          <dt>result</dt><dd>After the call, the customer asked for the written review so they could share it inside their team, and my account team is using it for the follow-up with their engineering leadership. On both accounts, the sales team thanked me for the approach.</dd>
+          <dt>lesson</dt><dd>Reading the champion also means noticing when you're talking to the wrong one. On one account, the person in the room wasn't going to push it internally. The numbers still did their job: they showed the real question wasn't whether we could help, but whether we fit how their operations team works. That tells the account team exactly who to bring back in, and when.</dd>
+          <dt>next</dt><dd>Both reviews end the same way: agree the baseline together, then pilot the add-on on the noisiest services. I'm turning the method into an assistant any consultant can run.</dd>
+        </dl>
+      </div>
+    </article>
+
+    <article class="entry" id="rba">
+      <div class="rail">
+        <span class="when">2025–2026</span>
+        <span class="tag ok">team's go-to</span>
+        <span class="stack">Rundeck · YAML · Bash · Ansible · Kubernetes</span>
+      </div>
+      <div class="body">
+        <h3>From scheduled scripts to event-driven automation</h3>
+        <p class="sub">I was the first on my team to go deep on Runbook Automation.</p>
+        <dl>
+          <dt>problem</dt><dd>Most prospects run PowerShell or Bash on a schedule across a lot of VMs. Jobs run long, step on each other, and nobody sees the result until something breaks.</dd>
+          <dt>built</dt><dd>Jobs customers can take to production, like network-interface diagnostics followed by a guarded fix, or health checks paired with controlled restarts. Plus the questions that always come with them: self-hosted licensing, database design and user limits.</dd>
+          <dt>library</dt><dd>Six reusable jobs so far, in three look-then-fix pairs. Each one writes what it found to the incident before it touches anything.</dd>
+          <dt>result</dt><dd>About a quarter of my customer calls (41) were about automation, and teammates now send their automation deals my way.</dd>
+        </dl>
+        <figure><img src="assets/rundeck.jpg" alt="A Rundeck job definition laid out as steps with guardrails" loading="lazy"><figcaption>How I structure a job: diagnose, decide, then act behind an approval.</figcaption></figure>
+      </div>
+    </article>
+
+    <article class="entry" id="inui">
+      <div class="rail">
+        <span class="when">2025</span>
+        <span class="tag ok">used by Support since v1.0</span>
+        <span class="tag int">internal, mock output</span>
+        <span class="stack">Python · SQL · CLI</span>
+      </div>
+      <div class="body">
+        <h3>A manual risk review, now one command</h3>
+        <p class="sub">INUI, which I built with two Support teammates.</p>
+        <dl>
+          <dt>problem</dt><dd>One of Support's most common requests needed a manual review of the account's history, digging through several internal systems every time.</dd>
+          <dt>built</dt><dd>A command-line tool: type an account name and get everything the reviewer needs on one screen, from account age and usage to incident volume and a simple summary score. When the data source behind it changed, we rebuilt it in a few weeks.</dd>
+          <dt>result</dt><dd>Support started using it in April 2025 and still does, more than a year later.</dd>
+        </dl>
+        <pre class="term" aria-label="Example output with made-up data"><span class="p">❯</span> inui --account acme-demo
+<span class="d">account     </span>acme-demo · paid · created 2023-04-11
+<span class="d">usage       </span>48 users · 31 services · 22 integrations
+<span class="d">incidents   </span>1,904 (90d) · 87% from integrations
+<span class="d">owner tz    </span>America/Santiago
+<span class="d">risk score  </span><span class="g">12 / 100  low</span>
+<span class="d">suggestion  </span><span class="g">approve</span> · <span class="y">confirm owner phone first</span></pre>
+        <p class="note">Made-up data. The real tool only runs inside the company network.</p>
+      </div>
+    </article>
+
+    <article class="entry" id="scopion">
+      <div class="rail">
+        <span class="when">2026</span>
+        <span class="tag ok">open source · MIT</span>
+        <span class="stack">FastAPI · Python · vanilla JS</span>
+      </div>
+      <div class="body">
+        <h3>Scopion: know which deals you'll actually win</h3>
+        <p class="sub">A side project I'm building in public.</p>
+        <dl>
+          <dt>problem</dt><dd>Freelancers and consultants track deals in spreadsheets, so they never find out which discovery questions they skipped on the deals they lost.</dd>
+          <dt>built</dt><dd>A small pipeline tracker that runs offline. It keeps every deal and its next step, marks risky ones red, yellow or green, handles bulk updates and one-click briefs, and shows win rate by lead source and which qualification signals actually predict a win. Exports to CSV, JSON or Markdown, with a CRM sync prototype.</dd>
+          <dt>run it</dt><dd><code class="mono">./scopion.command</code>. No database, no account, sample data only.</dd>
+        </dl>
+        <figure><img src="assets/scopion.jpg" alt="Scopion's pipeline analytics screen: win rate, risk mix and win rate by lead source" loading="lazy"><figcaption><a href="https://github.com/rcarrascom/Scopion" target="_blank" rel="noopener">github.com/rcarrascom/Scopion ↗</a></figcaption></figure>
+      </div>
+    </article>
+  </section>
+
+  <section class="sec" id="building">
+    <header><h2>What I'm building next</h2><span class="label">and what each one builds on</span></header>
+    <div class="road">
+      <div class="road-row">
+        <span class="st go">in progress</span>
+        <div><h4>Health-check assistant</h4><p>Pulls an existing customer's data, shows where they stand today, and points to the add-on that closes the gap.</p></div>
+        <div class="from">builds on <b>two customer reviews</b> and a written step-by-step method</div>
+      </div>
+      <div class="road-row">
+        <span class="st go">in progress</span>
+        <div><h4>Email-alert drills for any use case</h4><p>Turns any team's email alerts into realistic incidents with live responder activity, matched to how they actually work.</p></div>
+        <div class="from">builds on <b>2 customer-specific drills</b> and a first generic version</div>
+      </div>
+      <div class="road-row">
+        <span class="st next">next</span>
+        <div><h4>Account setup from a description</h4><p>Describe the workflow, and it creates the services, escalation policies, users and event rules for you.</p></div>
+        <div class="from">builds on <b>my setup scripts</b> for policies, users and event rules</div>
+      </div>
+      <div class="road-row">
+        <span class="st next">next</span>
+        <div><h4>Public Runbook Automation job library</h4><p>Cleaned-up jobs as reference samples, so an AI assistant starts from tested patterns instead of writing jobs from scratch.</p></div>
+        <div class="from">builds on <b>the six jobs above</b> and my job-builder workflow</div>
+      </div>
+      <div class="road-row">
+        <span class="st explore">exploring</span>
+        <div><h4>From call debrief to follow-up</h4><p>After a customer call: the debrief, next steps in the CRM, and the follow-up work started for me.</p></div>
+        <div class="from">starting from <b>PulseSF's</b> CRM updates</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="more">
+    <header><h2>Smaller things</h2><span class="label">same habits, less time</span></header>
+    <div class="grid">
+      <div class="card"><span class="label">writing</span><h4>Same incident, five teams</h4><p>The LinkedIn carousel behind the timeline at the top of this page.</p></div>
+      <div class="card"><span class="label">demos</span><h4>Demos built for one industry</h4><p>Data-center building alarms that escalate across sites, contact-center voicemails that turn into incidents, and monitoring from PRTG, Pingdom and AWS.</p></div>
+      <div class="card"><span class="label">automation</span><h4>Demo account in minutes</h4><p>Scripts and API collections that create event rules, escalation policies and users for a realistic demo account.</p></div>
+      <div class="card"><span class="label">enablement</span><h4>A cloud deploy guide</h4><p>A step-by-step guide I wrote for a teammate, to deploy an on-call-to-chat integration on AWS Lambda, DynamoDB and CloudFormation.</p></div>
+      <div class="card"><span class="label">incident response</span><h4>Major-incident triage</h4><p>Back in Support, I ran case triage during a flood of notification failures, routing affected customers while the major incident was worked.</p></div>
+      <div class="card"><span class="label">side project</span><h4>Marketplace pricing dashboard</h4><p>A Streamlit and Plotly dashboard that compares competitor listings by category. I built it to learn scraping and charts.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" id="path">
+    <header><h2>How I got here</h2><span class="label">support → sales engineering</span></header>
+    <ol class="tl">
+      <li><b>2019–2021</b><span>Data and reporting</span><small>Power BI, SAP cubes and VBA in retail and logistics</small></li>
+      <li><b>2021–2024</b><span>Enterprise software support</span><small>SQL and server troubleshooting for North American customers</small></li>
+      <li><b>2024–2025</b><span>Technical Support, PagerDuty</span><small>APIs, integrations, incident workflows; co-built INUI</small></li>
+      <li><b>2025–2026</b><span>Solutions Consultant</span><small>AIOps, Event Orchestration and automation demos</small></li>
+      <li class="now"><b>Oct 2026</b><span>Solutions Consultant II</span><small>promoted · the team's automation person</small></li>
+    </ol>
+  </section>
+
+  <footer>
+    <span>Robinson Martinez · Santiago, Chile</span>
+    <span>No customer names or internal data on this page, on purpose.</span>
+  </footer>
+</div>
+
+<div class="pal-back" id="pal" hidden>
+  <div class="pal" role="dialog" aria-modal="true" aria-label="Jump to">
+    <input id="pal-q" type="text" placeholder="Jump to a project or link…" autocomplete="off" spellcheck="false" aria-controls="pal-list" aria-label="Search">
+    <ul id="pal-list" role="listbox"></ul>
+    <div class="pal-f"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>↵</kbd> open</span><span><kbd>esc</kbd> close</span></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  try{var saved=localStorage.getItem("theme");if(saved)root.setAttribute("data-theme",saved);}catch(e){}
+  function currentTheme(){var t=root.getAttribute("data-theme");if(t)return t;
+    return window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}
+  function toggleTheme(){var next=currentTheme()==="dark"?"light":"dark";root.setAttribute("data-theme",next);
+    try{localStorage.setItem("theme",next);}catch(e){}toast(next==="dark"?"Dark theme":"Light theme");}
+  document.getElementById("theme").addEventListener("click",toggleTheme);
+
+  var isMac=/Mac|iPhone|iPad/.test(navigator.platform||navigator.userAgent);
+  if(!isMac){document.querySelectorAll("kbd").forEach(function(k){if(k.textContent==="⌘K")k.textContent="Ctrl K";});}
+
+  function go(id){return function(){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});};}
+  function link(u){return function(){var a=document.createElement("a");a.href=u;a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove();};}
+  var items=[
+    {l:"PulseSF",h:"case file",k:"salesforce pipeline tool",a:go("pulsesf")},
+    {l:"AI incident-drill agents",h:"case file",k:"claude mcp agents ai",a:go("agents")},
+    {l:"Health check first",h:"case file",k:"aiops noise review method",a:go("health")},
+    {l:"Runbook Automation",h:"case file",k:"rundeck rba jobs library",a:go("rba")},
+    {l:"INUI",h:"case file",k:"support cli review",a:go("inui")},
+    {l:"Scopion",h:"case file",k:"open source pipeline",a:go("scopion")},
+    {l:"What I'm building next",h:"section",k:"roadmap next ideas",a:go("building")},
+    {l:"Smaller things",h:"section",k:"demos writing scripts",a:go("more")},
+    {l:"How I got here",h:"section",k:"timeline career",a:go("path")},
+    {l:"LinkedIn",h:"new tab",k:"profile contact",a:link("https://www.linkedin.com/in/robinson-martinez-se")},
+    {l:"GitHub",h:"new tab",k:"code repos",a:link("https://github.com/rcarrascom")},
+    {l:"Scopion repo",h:"new tab",k:"github source",a:link("https://github.com/rcarrascom/Scopion")},
+    {l:"Switch theme",h:"light / dark",k:"dark light mode",a:toggleTheme}
+  ];
+  var pal=document.getElementById("pal"),q=document.getElementById("pal-q"),list=document.getElementById("pal-list"),sel=0,shown=items,lastFocus=null;
+  function render(){
+    var s=q.value.trim().toLowerCase();
+    shown=items.filter(function(i){return !s||(i.l+" "+i.k+" "+i.h).toLowerCase().indexOf(s)>-1;});
+    if(sel>=shown.length)sel=0;
+    list.innerHTML="";
+    if(!shown.length){var e=document.createElement("li");e.className="empty";e.textContent="Nothing matches. Try \"agents\" or \"github\".";list.appendChild(e);return;}
+    shown.forEach(function(i,n){
+      var li=document.createElement("li");li.setAttribute("role","option");li.id="opt-"+n;li.setAttribute("aria-selected",n===sel?"true":"false");
+      var a=document.createElement("span");a.textContent=i.l;var b=document.createElement("small");b.textContent=i.h;li.appendChild(a);li.appendChild(b);
+      li.addEventListener("mousemove",function(){if(sel!==n){sel=n;mark();}});
+      li.addEventListener("click",function(){run(n);});
+      list.appendChild(li);
+    });
+    q.setAttribute("aria-activedescendant","opt-"+sel);
+  }
+  function mark(){[].forEach.call(list.children,function(li,n){li.setAttribute("aria-selected",n===sel?"true":"false");});
+    q.setAttribute("aria-activedescendant","opt-"+sel);var c=list.children[sel];if(c&&c.scrollIntoView)c.scrollIntoView({block:"nearest"});}
+  function open(){lastFocus=document.activeElement;pal.hidden=false;q.value="";sel=0;render();q.focus();}
+  function close(){pal.hidden=true;if(lastFocus&&lastFocus.focus)lastFocus.focus();}
+  function run(n){var i=shown[n];if(!i)return;close();i.a();}
+  document.getElementById("open-pal").addEventListener("click",open);
+  pal.addEventListener("click",function(e){if(e.target===pal)close();});
+  q.addEventListener("input",function(){sel=0;render();});
+  document.addEventListener("keydown",function(e){
+    var k=e.key.toLowerCase();
+    if((e.metaKey||e.ctrlKey)&&k==="k"){e.preventDefault();pal.hidden?open():close();return;}
+    if(pal.hidden){if(k==="/"&&!/input|textarea/i.test(document.activeElement.tagName)){e.preventDefault();open();}return;}
+    if(k==="escape"){e.preventDefault();close();}
+    else if(k==="arrowdown"){e.preventDefault();if(shown.length){sel=(sel+1)%shown.length;mark();}}
+    else if(k==="arrowup"){e.preventDefault();if(shown.length){sel=(sel-1+shown.length)%shown.length;mark();}}
+    else if(k==="enter"){e.preventDefault();run(sel);}
+    else if(k==="tab"){e.preventDefault();q.focus();}
+  });
+  var tt;
+  function toast(msg){var t=document.querySelector(".toast");if(!t){t=document.createElement("div");t.className="toast";t.setAttribute("role","status");document.body.appendChild(t);}
+    t.textContent=msg;t.hidden=false;clearTimeout(tt);tt=setTimeout(function(){t.hidden=true;},1400);}
+})();
+</script>
+</body>
+</html>
