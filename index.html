@@ -115,7 +115,8 @@ kbd{font:500 11px var(--mono);border:1px solid var(--line);padding:0 4px;color:v
 .big{font:800 52px/1 var(--display);font-stretch:100%;color:var(--accent);font-variant-numeric:tabular-nums}
 .t-pulse{grid-column:span 2;grid-row:span 2}
 .t-agents,.t-scopion,.t-inui{grid-column:span 2}
-.t-lib{grid-column:1/-1}
+.t-lib,.t-alk{grid-column:span 2}
+.t-lib .jobs{grid-template-columns:minmax(0,1fr)}
 .minibar{display:flex;flex-direction:column;gap:8px;font:400 12px var(--mono);color:var(--muted)}
 .minibar div{display:grid;grid-template-columns:56px minmax(0,1fr) 60px;gap:10px;align-items:center}
 .minibar s{display:block;height:10px;background:var(--sev2);text-decoration:none}
@@ -214,7 +215,7 @@ footer{margin-top:80px;padding-block:24px 48px;border-top:1px solid var(--line);
   .row{grid-template-columns:minmax(0,1fr) 64px;gap:6px 12px}
   .row .stage{grid-column:1/-1}
   .bento,.grid,.jobs{grid-template-columns:minmax(0,1fr)}
-  .t-pulse,.t-agents,.t-scopion,.t-inui,.t-lib{grid-column:auto}
+  .t-pulse,.t-agents,.t-scopion,.t-inui,.t-lib,.t-alk{grid-column:auto}
   .entry{grid-template-columns:minmax(0,1fr);gap:16px}
   .rail{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 12px}
   .body dl{grid-template-columns:minmax(0,1fr);gap:2px}
@@ -303,10 +304,10 @@ footer{margin-top:80px;padding-block:24px 48px;border-top:1px solid var(--line);
         </div>
         <span class="go">read the case file →</span>
       </a>
-      <a class="tile t-agents" href="#agents">
-        <span class="label">AI agents · 11 workflows</span>
-        <h3>AI agents that run real incident drills</h3>
-        <p>Setting up a believable demo used to take me days. Now it takes minutes.</p>
+      <a class="tile t-alk" href="#agentlive">
+        <span class="label">open source · MIT · v0.1.0</span>
+        <h3>Agent Live Kit: watch your AI agent team work, live</h3>
+        <img src="assets/agentlive.jpg" alt="Agent Live Kit: a live map of a Claude Code agent team with agents, hand-offs and an activity log" loading="lazy">
         <span class="go">read the case file →</span>
       </a>
       <a class="tile" href="#health">
@@ -332,6 +333,13 @@ footer{margin-top:80px;padding-block:24px 48px;border-top:1px solid var(--line);
         <span class="label">open source · MIT</span>
         <h3>Scopion: know which deals you'll actually win</h3>
         <img src="assets/scopion.jpg" alt="Scopion pipeline analytics screen" loading="lazy">
+        <span class="go">read the case file →</span>
+      </a>
+      <a class="tile t-agents" href="#agents">
+        <span class="label">AI agents · 11 workflows</span>
+        <h3>AI agents that run real incident drills</h3>
+        <p>Setting up a believable demo used to take me days. Now it takes minutes.</p>
+        <img src="assets/toolkit.jpg" alt="How the agent toolkit fits together" loading="lazy">
         <span class="go">read the case file →</span>
       </a>
       <a class="tile t-lib" href="#rba">
@@ -366,6 +374,25 @@ footer{margin-top:80px;padding-block:24px 48px;border-top:1px solid var(--line);
           <dt>built</dt><dd>A desktop app on top of the Salesforce CLI. You sign in once, edit many opportunities at once, and it pushes the changes in the background. It saves a local backup before every change, so nothing gets lost, and it shows closed-won revenue for the current quarter.</dd>
           <dt>result</dt><dd>A round of pipeline updates went from about an hour to 15 minutes or less. It's shared internally, the Solutions Consulting team uses it, and my manager named it when announcing my promotion.</dd>
         </dl>
+      </div>
+    </article>
+
+    <article class="entry" id="agentlive">
+      <div class="rail">
+        <span class="when">2026</span>
+        <span class="tag ok">open source · MIT</span>
+        <span class="stack">Node.js · zero dependencies · Claude Code hooks · SSE</span>
+      </div>
+      <div class="body">
+        <h3>Agent Live Kit: a live map of your AI agent team</h3>
+        <p class="sub">When I started running Claude Code with several sub-agents, I couldn't tell what any of them was doing. So I built a way to see it.</p>
+        <dl>
+          <dt>problem</dt><dd>With sub-agents, the terminal is one long scroll. You can't see which agents are running right now, who handed work to whom, whether something is stuck waiting for your permission, or what happened ten minutes ago.</dd>
+          <dt>built</dt><dd>A local web page that turns Claude Code's hook events into a live map: people, the main session, each agent type and the tools they use. Working agents glow, anything waiting on you turns amber, and beams show who's using what. It adds a flow view of hand-offs, a full activity log with search and replay, and a command-line tool that sets it up for any project and checks the install with clear fixes.</dd>
+          <dt>design</dt><dd>Local only: nothing leaves your computer, and telemetry is off. No dependencies beyond Node.js, and it works on Windows, macOS and Linux. The README has an "honest limits" section: if Claude Code never calls a tool, the map leaves it dim instead of faking activity.</dd>
+          <dt>try it</dt><dd><code class="mono">agent-live simulate</code> opens a demo team with no setup.</dd>
+        </dl>
+        <figure><img src="assets/agentlive.jpg" alt="Agent Live Kit team view: agent cards on the left, a live flow map in the middle and an activity log at the bottom" loading="lazy"><figcaption><a href="https://github.com/rcarrascom/agent-live-kit" target="_blank" rel="noopener">github.com/rcarrascom/agent-live-kit ↗</a> · built-in demo with a made-up team</figcaption></figure>
       </div>
     </article>
 
@@ -561,6 +588,8 @@ footer{margin-top:80px;padding-block:24px 48px;border-top:1px solid var(--line);
     {l:"Runbook Automation",h:"case file",k:"rundeck rba jobs library",a:go("rba")},
     {l:"INUI",h:"case file",k:"support cli review",a:go("inui")},
     {l:"Scopion",h:"case file",k:"open source pipeline",a:go("scopion")},
+    {l:"Agent Live Kit",h:"case file",k:"open source agents live map claude",a:go("agentlive")},
+    {l:"Agent Live Kit repo",h:"new tab",k:"github source",a:link("https://github.com/rcarrascom/agent-live-kit")},
     {l:"What I'm building next",h:"section",k:"roadmap next ideas",a:go("building")},
     {l:"Smaller things",h:"section",k:"demos writing scripts",a:go("more")},
     {l:"How I got here",h:"section",k:"timeline career",a:go("path")},
